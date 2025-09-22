@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'home_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -6,7 +7,7 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register'), backgroundColor: Colors.blue),
+      appBar: AppBar(title: Text('Daftar'), backgroundColor: const Color.fromARGB(255, 165, 98, 179)),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -17,7 +18,7 @@ class RegisterScreen extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: const Color.fromARGB(255, 165, 98, 179),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.person_add, size: 50, color: Colors.white),
@@ -77,36 +78,24 @@ class RegisterScreen extends StatelessWidget {
             SizedBox(height: 24),
 
             // Register Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Handle register
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                ),
-                child: Text(
-                  'REGISTER',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
+            // Tombol register
+            ElevatedButton(
+              onPressed: () {
+                // Navigasi ke HomeScreen dengan pushReplacement
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                );
+              },
+              child: Text('DAFTAR'),
             ),
-            SizedBox(height: 16),
 
-            // Login Link
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("Already have an account? "),
-                TextButton(
-                  onPressed: () {
-                    // Navigate to login
-                  },
-                  child: Text('Login'),
-                ),
-              ],
+            // Link kembali ke login
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Kembali ke LoginScreen
+              },
+              child: Text('Sudah punya akun? Masuk'),
             ),
           ],
         ),
