@@ -10,7 +10,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Masuk'),
-        backgroundColor: Colors.blue,
+        backgroundColor: const Color.fromARGB(255, 165, 98, 179),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -22,7 +22,7 @@ class LoginScreen extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.blue,
+                color: const Color.fromARGB(255, 165, 98, 179),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.person, size: 50, color: Colors.white),
@@ -63,7 +63,7 @@ class LoginScreen extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: const Color.fromARGB(255, 165, 98, 179),
                   padding: EdgeInsets.symmetric(vertical: 16),
                 ),
                 child: Text(
