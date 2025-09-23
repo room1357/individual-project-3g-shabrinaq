@@ -2,6 +2,14 @@
 
 A new Flutter project.
 
+
+Name    : Shabrina Qottrunnada
+
+Class   : SIB-3G
+
+NIM     : 2341760160
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
