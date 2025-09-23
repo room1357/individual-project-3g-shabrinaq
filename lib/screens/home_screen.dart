@@ -80,6 +80,11 @@ class HomeScreen extends StatelessWidget {
               title: Text('Logout'),
               onTap: () {
                 // Handle logout
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginScreen()),
+                  (route) => false,
+                );
               },
             ),
           ],
@@ -105,10 +110,11 @@ class HomeScreen extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildDashboardCard('Profile', Icons.person, Colors.green),
-                  _buildDashboardCard('Messages', Icons.message, Colors.orange),
-                  _buildDashboardCard('Settings', Icons.settings, Colors.purple),
-                  _buildDashboardCard('Help', Icons.help, Colors.red),
+                  _buildDashboardCard('Profile', Icons.person, Colors.green, context),
+                  _buildDashboardCard('Messages', Icons.message, Colors.orange, context),
+                  _buildDashboardCard('Settings', Icons.settings, Colors.purple, context),
+                  _buildDashboardCard('Help', Icons.help, Colors.red, context),
+                  _buildDashboardCard('Transaction', Icons.history, const Color.fromARGB(255, 54, 206, 244), context), // Tambahan card
                 ],
               ),
             ),
@@ -118,12 +124,24 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDashboardCard(String title, IconData icon, Color color) {
+  Widget _buildDashboardCard(String title, IconData icon, Color color, BuildContext context) {
     return Card(
       elevation: 4,
       child: InkWell(
         onTap: () {
           // Handle card tap
+          // tambahan card transaction
+          if (title == 'Transaction') {
+            // Navigasi ke ExpenseListScreen
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ExpenseListScreen()),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('$title clicked!')),
+            );
+          }
         },
         child: Container(
           padding: EdgeInsets.all(16),
