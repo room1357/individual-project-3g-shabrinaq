@@ -116,11 +116,22 @@ class HomeScreen extends StatelessWidget {
                 crossAxisSpacing: 16,
                 mainAxisSpacing: 16,
                 children: [
-                  _buildDashboardCard('Profile', Icons.person, Colors.green, context),
-                  _buildDashboardCard('Messages', Icons.message, Colors.orange, context),
-                  _buildDashboardCard('Settings', Icons.settings, Colors.purple, context),
-                  _buildDashboardCard('Help', Icons.help, Colors.red, context),
-                  _buildDashboardCard('Transaction', Icons.history, const Color.fromARGB(255, 54, 206, 244), context), // Tambahan card
+                 _buildDashboardCard('Expenses', Icons.attach_money, Colors.green, () {
+                    // Navigasi ke ExpenseListScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ExpenseListScreen()),
+                    );
+                  }),
+                  _buildDashboardCard('Profile', Icons.person, Colors.blue, () {
+                    // Navigasi ke ExpenseListScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                    );
+                  }),
+                  _buildDashboardCard('message', Icons.message, Colors.orange, null),
+                  _buildDashboardCard('Settings', Icons.settings, Colors.purple, null),
                 ],
               ),
             ),
@@ -130,44 +141,32 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDashboardCard(String title, IconData icon, Color color, BuildContext context) {
+  Widget _buildDashboardCard(String title, IconData icon, Color color, VoidCallback? onTap) {
     return Card(
       elevation: 4,
-      child: InkWell(
-        onTap: () {
-          // Handle card tap
-          if (title == 'Profile') {   // card profile
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ProfileScreen()),
-            );
-          } else if (title == 'Transaction') {   // tambahan card transaction
-            // Navigasi ke ExpenseListScreen
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ExpenseListScreen()),
-            );
-          } else {
+      child: Builder(
+        builder: (context) => InkWell(
+          onTap: onTap ?? () {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('$title clicked!')),
+              SnackBar(content: Text('Fitur $title segera hadir!')),
             );
-          }
-        },
-        child: Container(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 48, color: color),
-              SizedBox(height: 12),
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+          },
+          child: Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 48, color: color),
+                SizedBox(height: 12),
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
