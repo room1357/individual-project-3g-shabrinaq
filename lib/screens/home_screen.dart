@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'expense_list_screen.dart';
+import 'profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -43,7 +44,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Welcome User!',
+                    // 'Welcome User!',
+                    'Welcome Shabrina Qottrunnada!',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -64,7 +66,11 @@ class HomeScreen extends StatelessWidget {
               leading: Icon(Icons.person),
               title: Text('Profile'),
               onTap: () {
-                Navigator.pop(context);
+                // Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                );
               },
             ),
             ListTile(
@@ -130,8 +136,12 @@ class HomeScreen extends StatelessWidget {
       child: InkWell(
         onTap: () {
           // Handle card tap
-          // tambahan card transaction
-          if (title == 'Transaction') {
+          if (title == 'Profile') {   // card profile
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileScreen()),
+            );
+          } else if (title == 'Transaction') {   // tambahan card transaction
             // Navigasi ke ExpenseListScreen
             Navigator.push(
               context,
