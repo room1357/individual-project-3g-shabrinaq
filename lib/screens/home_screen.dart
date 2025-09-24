@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'settings_screen.dart';
 import 'login_screen.dart';
 import 'expense_list_screen.dart';
 import 'profile_screen.dart';
@@ -131,7 +132,13 @@ class HomeScreen extends StatelessWidget {
                     );
                   }),
                   _buildDashboardCard('message', Icons.message, Colors.orange, null),
-                  _buildDashboardCard('Settings', Icons.settings, Colors.purple, null),
+                  _buildDashboardCard('Settings', Icons.settings, Colors.purple, () {
+                    // Navigasi ke ExpenseListScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                    );
+                  }),
                 ],
               ),
             ),
