@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pemrograman_mobile/screens/advanced_expense_list_screen.dart';
 import 'settings_screen.dart';
 import 'login_screen.dart';
 import 'expense_list_screen.dart';
@@ -139,6 +140,13 @@ class HomeScreen extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => const SettingsScreen()),
                     );
                   }),
+                  _buildDashboardCard('Expense Analytics', Icons.analytics, const Color.fromARGB(255, 61, 83, 61), () {
+                    // Navigasi ke AdvancedExpenseListScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AdvancedExpenseListScreen()),
+                    );
+                  }),
                 ],
               ),
             ),
@@ -167,6 +175,7 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(height: 12),
                 Text(
                   title,
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
