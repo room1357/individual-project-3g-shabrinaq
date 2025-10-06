@@ -68,6 +68,11 @@ class ExpenseManager {
       ),
   ];
 
+  // CRUD Operations
+  static void addExpense(Expense expense) {
+    expenses.add(expense);
+  }
+
   // 1. Mendapatkan total pengeluaran per kategori
   static Map<String, double> getTotalByCategory(List<Expense> expenses) {
     Map<String, double> result = {};
@@ -112,5 +117,16 @@ class ExpenseManager {
     ).toSet();
     
     return total / uniqueDays.length;
+  }
+
+  // Additional helper methods
+  static double getTotalExpenses() {
+    return expenses.fold(0, (sum, expense) => sum + expense.amount);
+  }
+  
+  static List<Expense> getRecentExpenses({int limit = 5}) {
+    var sorted = List<Expense>.from(expenses);
+    sorted.sort((a, b) => b.date.compareTo(a.date));
+    return sorted.take(limit).toList();
   }
 }

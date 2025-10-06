@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/expense.dart';
 import '../services/expense_manager.dart';
+import 'add_expense_screen.dart';
 
 class AdvancedExpenseListScreen extends StatefulWidget {
   const AdvancedExpenseListScreen({super.key});
@@ -21,6 +22,13 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
     filteredExpenses = expenses;
   }
 
+    void _refreshExpenses() {
+    setState(() {
+      filteredExpenses = ExpenseManager.expenses;
+      _filterExpenses();
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,10 +123,14 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Fitur tambah pengeluaran segera hadir!')),
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddExpenseScreen()),
           );
+          if (result == true) {
+            _refreshExpenses();
+          }
         },
         backgroundColor: Colors.blue,
         child: Icon(Icons.add),
