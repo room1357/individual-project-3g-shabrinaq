@@ -73,6 +73,13 @@ class ExpenseManager {
     expenses.add(expense);
   }
 
+  static void updateExpense(Expense updatedExpense) {
+    final index = expenses.indexWhere((e) => e.id == updatedExpense.id);
+    if (index != -1) {
+      expenses[index] = updatedExpense;
+    }
+  }
+
   // 1. Mendapatkan total pengeluaran per kategori
   static Map<String, double> getTotalByCategory(List<Expense> expenses) {
     Map<String, double> result = {};

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/expense.dart';
 import '../services/expense_manager.dart';
 import 'add_expense_screen.dart';
+import 'edit_expense_screen.dart';
 
 class AdvancedExpenseListScreen extends StatefulWidget {
   const AdvancedExpenseListScreen({super.key});
@@ -226,6 +227,25 @@ void _showExpenseDetails(BuildContext context, Expense expense) {
         ],
       ),
       actions: [
+        // Tombol Edit
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); // Tutup dialog dulu
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditExpenseScreen(expense: expense),
+              ),
+            ).then((result) {
+              if (result == true) {
+                _refreshExpenses();
+              }
+            });
+          },
+          child: Text('Edit', style: TextStyle(color: Colors.blue)),
+        ),
+      
+        // Tombol Tutup
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text('Tutup'),
