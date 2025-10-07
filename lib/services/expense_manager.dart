@@ -80,6 +80,12 @@ class ExpenseManager {
     }
   }
 
+  // Modify saya
+  // CRUD Delete Data
+  static void deleteExpense(String id) {
+    expenses.removeWhere((e) => e.id == id);
+  }
+
   // 1. Mendapatkan total pengeluaran per kategori
   static Map<String, double> getTotalByCategory(List<Expense> expenses) {
     Map<String, double> result = {};

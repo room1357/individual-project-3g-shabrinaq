@@ -244,11 +244,50 @@ void _showExpenseDetails(BuildContext context, Expense expense) {
           },
           child: Text('Edit', style: TextStyle(color: Colors.blue)),
         ),
-      
+
+        // Tombol Delete
+        // modify tambahan
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            _confirmDelete(expense);
+          },
+          child: Text('Hapus', style: TextStyle(color: Colors.red)),
+        ),
+
         // Tombol Tutup
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text('Tutup'),
+        ),
+      ],
+    ),
+  );
+}
+
+// digunakan untuk konfirmasi Delete 
+// modify tambahan
+void _confirmDelete(Expense expense) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Hapus Pengeluaran'),
+      content: Text('Apakah kamu yakin ingin menghapus "${expense.title}"?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context), // batal delete
+          child: Text('Batal'),
+        ),
+        TextButton(
+          onPressed: () {
+            ExpenseManager.deleteExpense(expense.id);
+            _refreshExpenses();
+            Navigator.pop(context); // tutup dialog
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Pengeluaran berhasil dihapus')),
+            );
+          },
+          child: Text('Hapus', style: TextStyle(color: Colors.red)),
         ),
       ],
     ),
