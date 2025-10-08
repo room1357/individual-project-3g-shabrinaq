@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pemrograman_mobile/screens/advanced_expense_list_screen.dart';
+import 'package:pemrograman_mobile/screens/category_screen.dart';
 import 'settings_screen.dart';
 import 'login_screen.dart';
 import 'expense_list_screen.dart';
@@ -145,6 +146,13 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const AdvancedExpenseListScreen()),
+                    );
+                  }),
+                  _buildDashboardCard('Category', Icons.category, const Color.fromARGB(255, 97, 64, 178), () {
+                    // Navigasi ke CategoryScreen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const CategoryScreen()),
                     );
                   }),
                 ],
