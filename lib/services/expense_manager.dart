@@ -86,6 +86,16 @@ class ExpenseManager {
     expenses.removeWhere((e) => e.id == id);
   }
 
+  // Tambahan untuk Statistik
+  static Map<String, double> getCategoryTotals() {
+    final Map<String, double> totals = {};
+    for (var expense in expenses) {
+      totals[expense.category] =
+          (totals[expense.category] ?? 0) + expense.amount;
+    }
+    return totals;
+  }
+
   // 1. Mendapatkan total pengeluaran per kategori
   static Map<String, double> getTotalByCategory(List<Expense> expenses) {
     Map<String, double> result = {};
