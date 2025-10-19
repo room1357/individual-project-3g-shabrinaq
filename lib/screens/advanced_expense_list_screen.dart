@@ -3,6 +3,10 @@ import '../models/expense.dart';
 import '../services/expense_manager.dart';
 import 'add_expense_screen.dart';
 import 'edit_expense_screen.dart';
+import '../utils/currency_utils.dart';
+import '../utils/date_utils.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class AdvancedExpenseListScreen extends StatefulWidget {
   const AdvancedExpenseListScreen({super.key});
@@ -36,6 +40,16 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
       appBar: AppBar(
         title: Text('Pengeluaran Advanced'),
         backgroundColor: Colors.blue,
+        actions: [
+          // Tombol Export PDF
+          IconButton(
+            icon: Icon(Icons.picture_as_pdf),
+            tooltip: 'Export PDF',
+            onPressed: () async {
+              await _exportPDF(filteredExpenses);
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -293,4 +307,37 @@ void _confirmDelete(Expense expense) {
     ),
   );
 }
+
+// export pdf
+  Future<void> _exportPDF(List<Expense> data) async {
+    final pdf = pw.Document();
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) => pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Text('Laporan Pengeluaran',
+                style:
+                    pw.TextStyle(fontSize: 20, fontWeight: pw.FontWeight.bold)),
+            pw.SizedBox(height: 20),
+            pw.Table.fromTextArray(
+              headers: ['Judul', 'Kategori', 'Jumlah', 'Tanggal', 'Deskripsi'],
+              data: data
+                  .map((e) => [
+                        e.title,
+                        e.category,
+                        formatCurrency(e.amount),
+                        formatDate(e.date),
+                        e.description
+                      ])
+                  .toList(),
+            ),
+          ],
+        ),
+      ),
+    );
+    await Printing.layoutPdf(onLayout: (format) async => pdf.save());
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Data berhasil diexport ke PDF')));
+  }
 }
