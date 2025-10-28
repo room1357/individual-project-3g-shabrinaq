@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
-import 'home_screen.dart';
+import '../screens/login_screen.dart';
+import '../services/auth_service.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController fullNameController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController usernameController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController confirmPasswordController = TextEditingController();
+    
     return Scaffold(
-      appBar: AppBar(title: Text('Daftar'), backgroundColor: const Color.fromARGB(255, 165, 98, 179)),
+      appBar: AppBar(title: Text('REGISTER'), backgroundColor: Colors.blue),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -18,7 +25,7 @@ class RegisterScreen extends StatelessWidget {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 165, 98, 179),
+                color: Colors.blue,
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.person_add, size: 50, color: Colors.white),
@@ -27,6 +34,7 @@ class RegisterScreen extends StatelessWidget {
 
             // Full Name Field
             TextField(
+              controller: fullNameController,
               decoration: InputDecoration(
                 labelText: 'Full Name',
                 border: OutlineInputBorder(),
@@ -37,6 +45,7 @@ class RegisterScreen extends StatelessWidget {
 
             // Email Field
             TextField(
+              controller: emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
                 border: OutlineInputBorder(),
@@ -47,6 +56,7 @@ class RegisterScreen extends StatelessWidget {
 
             // Username Field
             TextField(
+              controller: usernameController,
               decoration: InputDecoration(
                 labelText: 'Username',
                 border: OutlineInputBorder(),
@@ -57,6 +67,7 @@ class RegisterScreen extends StatelessWidget {
 
             // Password Field
             TextField(
+              controller: passwordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
@@ -68,6 +79,7 @@ class RegisterScreen extends StatelessWidget {
 
             // Confirm Password Field
             TextField(
+              controller: confirmPasswordController,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Confirm Password',
@@ -81,21 +93,75 @@ class RegisterScreen extends StatelessWidget {
             // Tombol register
             ElevatedButton(
               onPressed: () {
-                // Navigasi ke HomeScreen dengan pushReplacement
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                );
-              },
-              child: Text('DAFTAR'),
-            ),
+                if (passwordController.text != confirmPasswordController.text) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Password dan Confirm Password tidak cocok!')),
+                  );
+                  return;
+                }
 
-            // Link kembali ke login
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context); // Kembali ke LoginScreen
+                final username = usernameController.text;
+                final password = passwordController.text;
+                final email = emailController.text;
+                final fullName = fullNameController.text;
+                
+                AuthService.registerUser(
+                  username: username,
+                  password: password,
+                  email: email,
+                  fullName: fullName,
+                ).then((result) {
+                  if (result['success']) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(result['message'])),
+                    );
+
+                    // Setelah register, langsung ke halaman login
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const LoginScreen(),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(result['message'])),
+                    );
+                  }
+                }).catchError((error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Terjadi kesalahan: $error')),
+                  );
+                });
               },
-              child: Text('Sudah punya akun? Masuk'),
+
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+              ),
+              child: const Text(
+                'REGISTER',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+              
+            // Link kembali ke login
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Belum punya akun? "),
+                TextButton(
+                  onPressed: () {
+                    // Navigasi ke LoginScreen dengan pop
+                    Navigator.pop(
+                      context,
+                      MaterialPageRoute(builder: (context) => const LoginScreen()
+                      ),
+                    );
+                  },
+                  child: Text('LOGIN'),
+                ),
+              ],
             ),
           ],
         ),

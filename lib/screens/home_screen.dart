@@ -6,9 +6,12 @@ import 'settings_screen.dart';
 import 'login_screen.dart';
 import 'expense_list_screen.dart';
 import 'profile_screen.dart';
+import '../models/user.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final User user;
+
+  const HomeScreen({required this.user, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +52,7 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(height: 10),
                   Text(
                     // 'Welcome User!',
-                    'Welcome Shabrina Qottrunnada!',
+                    'Welcome ${user.username}!',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -126,7 +129,7 @@ class HomeScreen extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => const ExpenseListScreen()),
                     );
-                  }),
+                 }),
                   _buildDashboardCard('Profile', Icons.person, Colors.blue, () {
                     // Navigasi ke ExpenseListScreen
                     Navigator.push(
