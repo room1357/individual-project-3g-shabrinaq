@@ -7,6 +7,7 @@ import 'login_screen.dart';
 import 'expense_list_screen.dart';
 import 'profile_screen.dart';
 import '../models/user.dart';
+import '../screens/shared_expanse_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final User user;
@@ -164,6 +165,12 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => const StatisticsScreen()),
+                    );
+                  }),
+                  _buildDashboardCard('Shared Expenses', Icons.group, Colors.teal, () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const SharedExpensesScreen()),
                     );
                   }),
                 ],
