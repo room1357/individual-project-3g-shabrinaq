@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../models/user.dart';
+import '../services/auth_service.dart';
 
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({super.key});
@@ -10,16 +13,64 @@ class CategoryScreen extends StatefulWidget {
 class _CategoryScreenState extends State<CategoryScreen> {
   List<String> categories = ['Makanan', 'Transportasi', 'Utilitas', 'Hiburan', 'Pendidikan'];
   TextEditingController newCategoryController = TextEditingController();
+  User? currentUser;
+  bool isLoading = true;
+  
+  @override
+  void initState() {
+    super.initState();
+    _loadCurrentUser(); 
+  }
+
+  @override
+  void dispose() {
+    newCategoryController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final user = await AuthService.getCurrentUser();
+    if (user != null) {
+      setState(() {
+        currentUser = user;
+      });
+      await _loadCategories();
+    }
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _loadCategories() async {
+    if (currentUser == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'categories_${currentUser!.username}';
+    final storedData = prefs.getStringList(key);
+
+    setState(() {
+      categories = storedData ?? [
+        'Makanan', 'Transportasi', 'Utilitas', 'Hiburan', 'Pendidikan',
+      ];
+    });
+  }
+
+  Future<void> _saveCategories() async {
+    if (currentUser == null) return;
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'categories_${currentUser!.username}'; 
+    await prefs.setStringList(key, categories);
+  }
 
   void _addCategory() {
     if (newCategoryController.text.isNotEmpty) {
       setState(() {
-        categories.add(newCategoryController.text);
+        categories.add(newCategoryController.text.trim());
         newCategoryController.clear();
       });
+      _saveCategories();
     }
   }
-
+  
   void _editCategory(int index) {
     newCategoryController.text = categories[index];
     showDialog(
@@ -38,6 +89,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                   categories[index] = newCategoryController.text;
                   newCategoryController.clear();
                 });
+                _saveCategories();
               }
               Navigator.pop(context);
             },
@@ -67,6 +119,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               setState(() {
                 categories.removeAt(index);
               });
+              _saveCategories();
               Navigator.pop(context);
             },
 
@@ -84,6 +137,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (currentUser == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text(
