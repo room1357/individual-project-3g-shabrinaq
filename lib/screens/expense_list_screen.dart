@@ -1,12 +1,43 @@
 import 'package:flutter/material.dart';
 import '../models/expense.dart';
+import 'add_expense_screen.dart';
+import '../services/expense_manager.dart';
+import 'edit_expense_screen.dart';
 
-class ExpenseListScreen extends StatelessWidget {
+class ExpenseListScreen extends StatefulWidget {
   const ExpenseListScreen({super.key});
 
   @override
+  State<ExpenseListScreen> createState() => _ExpenseListScreenState();
+}
+
+  class _ExpenseListScreenState extends State<ExpenseListScreen> {
+  List<Expense> expenses = [];
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadExpenses();
+  }
+
+  Future<void> _loadExpenses() async {
+    await ExpenseManager.loadExpenses();
+    setState(() {
+      expenses = ExpenseManager.expenses;
+      isLoading = false;
+    });
+  }
+
+  Future<void> _refreshExpenses() async {
+    await ExpenseManager.loadExpenses();
+    setState(() {
+      expenses = ExpenseManager.expenses;
+    });
+  }
+  @override
   Widget build(BuildContext context) {
-    // Data sample menggunakan List<Expense>
+    /* // Data sample menggunakan List<Expense>
     final List<Expense> expenses = [
       Expense(
         id: '1',
@@ -72,7 +103,12 @@ class ExpenseListScreen extends StatelessWidget {
         date: DateTime(2024, 9, 10),
         description: 'Ongkos perjalanan harian ke kampus',
       ),
-    ];
+    ];*/
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator(),),
+      );
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -174,10 +210,14 @@ class ExpenseListScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Fitur tambah pengeluaran segera hadir!')),
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const AddExpenseScreen()),
           );
+          if (result == true) {
+            _refreshExpenses();
+          }
         },
         backgroundColor: Colors.blue,
         child: Icon(Icons.add),
@@ -247,6 +287,34 @@ class ExpenseListScreen extends StatelessWidget {
           ],
         ),
         actions: [
+          // Tombol Edit
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); // Tutup dialog dulu
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditExpenseScreen(expense: expense),
+              ),
+            ).then((result) {
+              if (result == true) {
+                _refreshExpenses();
+              }
+            });
+          },
+          child: Text('Edit', style: TextStyle(color: Colors.blue)),
+        ),
+
+        // Tombol Delete
+        // modify tambahan
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+            _confirmDelete(expense);
+          },
+          child: Text('Hapus', style: TextStyle(color: Colors.red)),
+        ),
+
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text('Tutup'),
@@ -255,4 +323,31 @@ class ExpenseListScreen extends StatelessWidget {
       ),
     );
   }
+  
+  void _confirmDelete(Expense expense) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: Text('Hapus Pengeluaran'),
+      content: Text('Apakah kamu yakin ingin menghapus "${expense.title}"?'),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context), // batal delete
+          child: Text('Batal'),
+        ),
+        TextButton(
+          onPressed: () {
+            ExpenseManager.deleteExpense(expense.id);
+            _refreshExpenses();
+            Navigator.pop(context); // tutup dialog
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Pengeluaran berhasil dihapus')),
+            );
+          },
+          child: Text('Hapus', style: TextStyle(color: Colors.red)),
+        ),
+      ],
+    ),
+  );
+}
 }

@@ -22,4 +22,28 @@ class Expense {
   String get formattedDate {
     return '${date.day}/${date.month}/${date.year}';
   }
+
+  // Konversi objek ke Map (untuk disimpan)
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'amount': amount,
+      'category': category,
+      'date': date.toIso8601String(),
+      'description': description,
+    };
+  }
+
+  // Konversi Map ke objek Expense (saat di-load)
+  factory Expense.fromJson(Map<String, dynamic> json) {
+    return Expense(
+      id: json['id'],
+      title: json['title'],
+      amount: (json['amount'] as num).toDouble(),
+      category: json['category'],
+      date: DateTime.parse(json['date']),
+      description: json['description'],
+    );
+  }
 }

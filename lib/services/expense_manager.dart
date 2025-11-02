@@ -1,9 +1,11 @@
 import '../models/expense.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class ExpenseManager {
-  static List<Expense> expenses = [/* data expenses */
-  Expense(
-        id: '1',
+  static List<Expense> expenses = [
+    Expense(
+        id:'1',
         title: 'Belanja Bulanan',
         amount: 150000,
         category: 'Makanan',
@@ -68,22 +70,43 @@ class ExpenseManager {
       ),
   ];
 
-  // CRUD Operations
-  static void addExpense(Expense expense) {
-    expenses.add(expense);
+  static const String _storageKey = 'saved_expenses';
+
+  // Untuk menyimpan ke SharedPreferences
+  static Future<void> _saveExpenses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = expenses.map((e) => jsonEncode(e.toJson())).toList();
+    await prefs.setStringList(_storageKey, data);
   }
 
-  static void updateExpense(Expense updatedExpense) {
+  // Untuk memuat data dari SharedPreferences
+  static Future<void> loadExpenses() async {
+    final prefs = await SharedPreferences.getInstance();
+    final data = prefs.getStringList(_storageKey);
+    if (data != null && data.isNotEmpty) {
+      expenses = data.map((e) => Expense.fromJson(jsonDecode(e))).toList();
+    } 
+  }
+
+  // CRUD Operations
+  static void addExpense(Expense expense) async {
+    expenses.add(expense);
+    await _saveExpenses();
+  }
+
+  static void updateExpense(Expense updatedExpense) async {
     final index = expenses.indexWhere((e) => e.id == updatedExpense.id);
     if (index != -1) {
       expenses[index] = updatedExpense;
+      await _saveExpenses();
     }
   }
 
   // Modify saya
   // CRUD Delete Data
-  static void deleteExpense(String id) {
+  static Future<void> deleteExpense(String id) async {
     expenses.removeWhere((e) => e.id == id);
+    await _saveExpenses();
   }
 
   // Tambahan untuk Statistik

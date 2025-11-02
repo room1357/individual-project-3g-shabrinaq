@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../models/expense.dart';
 import '../services/expense_manager.dart';
-import 'add_expense_screen.dart';
-import 'edit_expense_screen.dart';
+// import 'add_expense_screen.dart';
+// import 'edit_expense_screen.dart';
 import '../utils/currency_utils.dart';
 import '../utils/date_utils.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -20,19 +20,30 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
   List<Expense> filteredExpenses = [];
   String selectedCategory = 'Semua';
   TextEditingController searchController = TextEditingController();
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    filteredExpenses = expenses;
+    _loadData();
   }
 
-    void _refreshExpenses() {
+  Future<void> _loadData() async {
+    await ExpenseManager.loadExpenses(); 
     setState(() {
-      filteredExpenses = ExpenseManager.expenses;
-      _filterExpenses();
+      expenses = ExpenseManager.expenses;
+      filteredExpenses = expenses;
+      isLoading = false;
     });
   }
+  
+  /* Future<void> _refreshExpenses() async {
+    await ExpenseManager.loadExpenses();
+    setState(() {
+      expenses = ExpenseManager.expenses;
+      _filterExpenses();
+    });
+  } */
   
   @override
   Widget build(BuildContext context) {
@@ -137,7 +148,7 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      /* floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final result = await Navigator.push(
             context,
@@ -149,7 +160,7 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
         },
         backgroundColor: Colors.blue,
         child: Icon(Icons.add),
-      ),
+      ), */
     );
   }
 
@@ -242,7 +253,7 @@ void _showExpenseDetails(BuildContext context, Expense expense) {
       ),
       actions: [
         // Tombol Edit
-        TextButton(
+        /* TextButton(
           onPressed: () {
             Navigator.pop(context); // Tutup dialog dulu
             Navigator.push(
@@ -267,7 +278,7 @@ void _showExpenseDetails(BuildContext context, Expense expense) {
             _confirmDelete(expense);
           },
           child: Text('Hapus', style: TextStyle(color: Colors.red)),
-        ),
+        ), */
 
         // Tombol Tutup
         TextButton(
@@ -281,7 +292,7 @@ void _showExpenseDetails(BuildContext context, Expense expense) {
 
 // digunakan untuk konfirmasi Delete 
 // modify tambahan
-void _confirmDelete(Expense expense) {
+/* void _confirmDelete(Expense expense) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
@@ -306,7 +317,7 @@ void _confirmDelete(Expense expense) {
       ],
     ),
   );
-}
+}*/
 
 // export pdf
   Future<void> _exportPDF(List<Expense> data) async {

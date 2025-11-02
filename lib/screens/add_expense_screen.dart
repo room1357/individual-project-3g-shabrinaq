@@ -90,6 +90,9 @@ class _AddExpenseScreenState extends State<AddExpenseScreen> {
                 ),
               ),
               validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Judul tidak boleh kosong';
+                }
                 return null;
               },
             ),
