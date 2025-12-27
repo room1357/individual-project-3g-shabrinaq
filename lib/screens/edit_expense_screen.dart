@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/expense.dart';
+import '../models/user.dart';
 import '../services/expense_manager.dart';
+import '../services/auth_service.dart';
 
 class EditExpenseScreen extends StatefulWidget {
   final Expense expense;
@@ -20,7 +23,9 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
   late String _selectedCategory;
   late DateTime _selectedDate;
   
-  final List<String> _categories = ['Makanan', 'Transportasi', 'Utilitas', 'Hiburan', 'Pendidikan'];
+  List<String> _categories = ['Makanan', 'Transportasi', 'Utilitas', 'Hiburan', 'Pendidikan'];
+  User? currentUser;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -30,6 +35,42 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
     _descriptionController = TextEditingController(text: widget.expense.description);
     _selectedCategory = widget.expense.category;
     _selectedDate = widget.expense.date;
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    await _loadCurrentUser();
+    await _loadCategories();
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final user = await AuthService.getCurrentUser();
+    setState(() {
+      currentUser = user;
+    });
+  }
+
+  Future<void> _loadCategories() async {
+    if (currentUser == null) return;
+    
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'categories_${currentUser!.username}';
+    final storedData = prefs.getStringList(key);
+
+    setState(() {
+      _categories = storedData ?? [
+        'Makanan', 'Transportasi', 'Utilitas', 'Hiburan', 'Pendidikan',
+      ];
+      
+      // Pastikan kategori yang dipilih ada dalam list
+      // Jika tidak ada (misalnya kategori sudah dihapus), set ke kategori pertama
+      if (!_categories.contains(_selectedCategory) && _categories.isNotEmpty) {
+        _selectedCategory = _categories[0];
+      }
+    });
   }
 
   @override
@@ -80,6 +121,26 @@ class _EditExpenseScreenState extends State<EditExpenseScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF8B7AB8),
+                Color(0xFF6B5B95),
+              ],
+            ),
+          ),
+          child: Center(
+            child: CircularProgressIndicator(color: Colors.white),
+          ),
+        ),
+      );
+    }
+
     return Scaffold(
       body: Container(
         width: double.infinity,

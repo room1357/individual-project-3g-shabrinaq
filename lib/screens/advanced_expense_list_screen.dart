@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/expense.dart';
+import '../models/user.dart';
 import '../services/expense_manager.dart';
+import '../services/auth_service.dart';
 import '../utils/currency_utils.dart';
 import '../utils/date_utils.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -16,9 +19,11 @@ class AdvancedExpenseListScreen extends StatefulWidget {
 class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
   List<Expense> expenses = ExpenseManager.expenses;
   List<Expense> filteredExpenses = [];
+  List<String> categories = ['Semua']; // Default dengan 'Semua'
   String selectedCategory = 'Semua';
   TextEditingController searchController = TextEditingController();
   bool isLoading = true;
+  User? currentUser;
 
   @override
   void initState() {
@@ -27,11 +32,38 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
   }
 
   Future<void> _loadData() async {
+    await _loadCurrentUser();
     await ExpenseManager.loadExpenses(); 
+    await _loadCategories(); // Load kategori dari SharedPreferences
     setState(() {
       expenses = ExpenseManager.expenses;
       filteredExpenses = expenses;
       isLoading = false;
+    });
+  }
+
+  Future<void> _loadCurrentUser() async {
+    final user = await AuthService.getCurrentUser();
+    setState(() {
+      currentUser = user;
+    });
+  }
+
+  Future<void> _loadCategories() async {
+    if (currentUser == null) return;
+    
+    final prefs = await SharedPreferences.getInstance();
+    final key = 'categories_${currentUser!.username}';
+    final storedData = prefs.getStringList(key);
+
+    setState(() {
+      // Ambil kategori dari SharedPreferences atau gunakan default
+      List<String> userCategories = storedData ?? [
+        'Makanan', 'Transportasi', 'Utilitas', 'Hiburan', 'Pendidikan',
+      ];
+      
+      // Gabungkan 'Semua' dengan kategori user
+      categories = ['Semua', ...userCategories];
     });
   }
   
@@ -141,14 +173,16 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
                       
                       SizedBox(height: 16),
                       
-                      // Category filter
+                      // Category filter - Sekarang menggunakan kategori dinamis
                       Container(
                         height: 50,
-                        child: ListView(
+                        child: ListView.builder(
                           scrollDirection: Axis.horizontal,
                           padding: EdgeInsets.symmetric(horizontal: 20),
-                          children: ['Semua', 'Makanan', 'Transportasi', 'Utilitas', 'Hiburan', 'Pendidikan']
-                            .map((category) => Padding(
+                          itemCount: categories.length,
+                          itemBuilder: (context, index) {
+                            final category = categories[index];
+                            return Padding(
                               padding: EdgeInsets.only(right: 8),
                               child: FilterChip(
                                 label: Text(
@@ -181,7 +215,8 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
                                   });
                                 },
                               ),
-                            )).toList(),
+                            );
+                          },
                         ),
                       ),
                       
@@ -397,7 +432,7 @@ class _AdvancedExpenseListScreenState extends State<AdvancedExpenseListScreen> {
       case 'pendidikan':
         return Icons.school_rounded;
       default:
-        return Icons.attach_money_rounded;
+        return Icons.category_rounded;
     }
   }
 
