@@ -28,7 +28,7 @@ To login, we must first create an account in the registration section. After doi
 ## 1. LOGIN PAGE
 <p align="center">
   <img src="https://github.com/user-attachments/assets/373639c7-e9d5-45cd-9961-9d1bdf538a93" width="25%" />
-  <img src="https://github.com/user-attachments/assets/7c4b3f81-9b2a-44e1-8337-0fc21b2c9c98" width="24%" />
+  <img src="https://github.com/user-attachments/assets/7c4b3f81-9b2a-44e1-8337-0fc21b2c9c98" width="25%" />
 </p>
 
 ## 2. REGISTRATION PAGE
