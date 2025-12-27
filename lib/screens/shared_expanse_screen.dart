@@ -125,133 +125,197 @@ class _SharedExpensesScreenState extends State<SharedExpensesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text('Shared Expenses'),
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-      ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                // Summary Cards
-                Container(
-                  color: Colors.blue,
-                  padding: const EdgeInsets.all(20),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.red[100],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                'You Owe',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.red[700],
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Rp ${_calculateOwedByMe().toStringAsFixed(0)}',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.red[700],
-                                ),
-                              ),
-                            ],
-                          ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF8B7AB8),
+              Color(0xFF6B5B95),
+              Color(0xFF4A4063),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Custom App Bar
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: Icon(Icons.arrow_back_rounded,
+                          color: Colors.white, size: 28),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'Shared Expenses',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.green[100],
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            children: [
-                              Text(
-                                'Owed to You',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.green[700],
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Rp ${_calculateOwedToMe().toStringAsFixed(0)}',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green[700],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
 
-                // Expenses List
-                Expanded(
-                  child: expenses.isEmpty
+              // Summary Cards (tetap di gradient)
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'You Owe',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white.withOpacity(0.9),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Rp ${_calculateOwedByMe().toStringAsFixed(0)}',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Owed to You',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.white.withOpacity(0.9),
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'Rp ${_calculateOwedToMe().toStringAsFixed(0)}',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 10),
+
+              // Content
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF5F3F7),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                  ),
+                  child: isLoading
                       ? Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.receipt_long,
-                                  size: 80, color: Colors.grey[300]),
-                              const SizedBox(height: 16),
-                              Text(
-                                'No shared expenses yet',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'Create one to split bills with friends',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ],
+                          child: CircularProgressIndicator(
+                            color: Color(0xFF7B68AA),
                           ),
                         )
-                      : ListView.builder(
-                          padding: const EdgeInsets.all(16),
-                          itemCount: expenses.length,
-                          itemBuilder: (context, index) {
-                            final expense = expenses[index];
-                            return _buildExpenseCard(expense);
-                          },
-                        ),
+                      : expenses.isEmpty
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.receipt_long_rounded,
+                                      size: 80,
+                                      color: Color(0xFF9B8BB4).withOpacity(0.5)),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'No shared expenses yet',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color(0xFF5D4E7C),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'Create one to split bills with friends',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF9B8BB4),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : ListView.builder(
+                              padding: EdgeInsets.all(20),
+                              itemCount: expenses.length,
+                              itemBuilder: (context, index) {
+                                final expense = expenses[index];
+                                return _buildExpenseCard(expense);
+                              },
+                            ),
                 ),
-              ],
-            ),
+              ),
+            ],
+          ),
+        ),
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addNewExpense,
-        backgroundColor: Colors.blue,
-        icon: const Icon(Icons.add, color: Colors.white),
-        label: const Text(
+        backgroundColor: Color(0xFF7B68AA),
+        icon: Icon(Icons.add_rounded, color: Colors.white),
+        label: Text(
           'Add Expense',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+          ),
         ),
       ),
     );
@@ -264,45 +328,51 @@ class _SharedExpensesScreenState extends State<SharedExpensesScreen> {
     );
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 4,
+            color: Color(0xFF9B87C6).withOpacity(0.15),
+            blurRadius: 10,
+            offset: Offset(0, 3),
           ),
         ],
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.all(16),
+        contentPadding: EdgeInsets.all(16),
         leading: Container(
-          padding: const EdgeInsets.all(10),
+          padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: Colors.blue.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(10),
+            color: Color(0xFFF8F6FA),
+            borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.receipt, color: Colors.blue),
+          child: Icon(Icons.receipt_rounded, color: Color(0xFF7B68AA)),
         ),
         title: Text(
           expense.title,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF5D4E7C),
+          ),
         ),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 4),
-            Text('Total: Rp ${expense.totalAmount.toStringAsFixed(0)}'),
+            SizedBox(height: 4),
+            Text(
+              'Total: Rp ${expense.totalAmount.toStringAsFixed(0)}',
+              style: TextStyle(color: Color(0xFF7B68AA)),
+            ),
             if (myParticipation.username.isNotEmpty) ...[
-              const SizedBox(height: 4),
+              SizedBox(height: 6),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: myParticipation.isPaid
-                      ? Colors.green[100]
-                      : Colors.orange[100],
+                      ? Color(0xFFD4F4DD)
+                      : Color(0xFFFFE4CC),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -313,15 +383,16 @@ class _SharedExpensesScreenState extends State<SharedExpensesScreen> {
                     fontSize: 11,
                     fontWeight: FontWeight.w600,
                     color: myParticipation.isPaid
-                        ? Colors.green[700]
-                        : Colors.orange[700],
+                        ? Color(0xFF2D7A3E)
+                        : Color(0xFFD97706),
                   ),
                 ),
               ),
             ],
           ],
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+        trailing: Icon(Icons.arrow_forward_ios_rounded,
+            size: 16, color: Color(0xFF7B68AA)),
         onTap: () {
           Navigator.push(
             context,

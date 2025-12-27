@@ -17,174 +17,248 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home'),
-        backgroundColor: Colors.blue,
-        actions: [
-          IconButton(
-            onPressed: () {
-              // Logout dengan pushAndRemoveUntil
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginScreen()),
-                (route) => false, // Hapus semua route sebelumnya
-              );
-            },
-            icon: Icon(Icons.logout),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFF8B7AB8),
+              Color(0xFF6B5B95),
+              Color(0xFF4A4063),
+            ],
           ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // Custom App Bar
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Menu Button
+                    Builder(
+                      builder: (context) => IconButton(
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                        icon: Icon(Icons.menu_rounded, color: Colors.white, size: 28),
+                      ),
+                    ),
+                    // Title
+                    Text(
+                      'Home',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                    // Logout Button
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                          (route) => false,
+                        );
+                      },
+                      icon: Icon(Icons.logout_rounded, color: Colors.white, size: 26),
+                    ),
+                  ],
+                ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    child: Icon(Icons.person, size: 40, color: Colors.blue),
-                  ),
-                  SizedBox(height: 10),
-                  Text(
-                    // 'Welcome User!',
-                    'Welcome ${user.username}!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+              
+              // Content
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF5F3F7),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
                     ),
                   ),
-                ],
+                  child: Padding(
+                    padding: EdgeInsets.all(20.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 10),
+                        Text(
+                          'Dashboard',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF5D4E7C),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Expanded(
+                          child: GridView.count(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            children: [
+                              _buildDashboardCard('Expenses', Icons.attach_money_rounded, Color(0xFF7B68AA), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const ExpenseListScreen()),
+                                );
+                              }),
+                              _buildDashboardCard('Profile', Icons.person_rounded, Color(0xFF9B87C6), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                                );
+                              }),
+                              _buildDashboardCard('Settings', Icons.settings_rounded, Color(0xFFB4A5D5), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                                );
+                              }),
+                              _buildDashboardCard('Expense Analytics', Icons.analytics_rounded, Color(0xFF8B7AB8), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const AdvancedExpenseListScreen()),
+                                );
+                              }),
+                              _buildDashboardCard('Category', Icons.category_rounded, Color(0xFF6B5B95), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const CategoryScreen()),
+                                );
+                              }),
+                              _buildDashboardCard('Statistic', Icons.bar_chart_rounded, Color(0xFF9B8BB4), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const StatisticsScreen()),
+                                );
+                              }),
+                              _buildDashboardCard('Shared Expenses', Icons.group_rounded, Color(0xFF7B68AA), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const SharedExpensesScreen()),
+                                );
+                              }),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
+            ],
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color(0xFF8B7AB8),
+                Color(0xFF6B5B95),
+              ],
             ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
+          ),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 70,
+                      height: 70,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(Icons.person_rounded, size: 40, color: Color(0xFF7B68AA)),
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      'Welcome ${user.fullName}!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _buildDrawerItem(Icons.home_rounded, 'Home', () {
                 Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile'),
-              onTap: () {
-                // Navigator.pop(context);
+              }),
+              _buildDrawerItem(Icons.person_rounded, 'Profile', () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ProfileScreen()),
                 );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-            Divider(),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Logout'),
-              onTap: () {
-                // Handle logout
+              }),
+              _buildDrawerItem(Icons.settings_rounded, 'Settings', () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                );
+              }),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Divider(color: Colors.white30, thickness: 1),
+              ),
+              _buildDrawerItem(Icons.logout_rounded, 'Logout', () {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (context) => const LoginScreen()),
                   (route) => false,
                 );
-              },
-            ),
-          ],
-        ),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Dashboard',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.blue,
-              ),
-            ),
-            SizedBox(height: 20),
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                children: [
-                 _buildDashboardCard('Expenses', Icons.attach_money, Colors.green, () {
-                    // Navigasi ke ExpenseListScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ExpenseListScreen()),
-                    );
-                 }),
-                  _buildDashboardCard('Profile', Icons.person, Colors.blue, () {
-                    // Navigasi ke ExpenseListScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                    );
-                  }),
-                  _buildDashboardCard('message', Icons.message, Colors.orange, null),
-                  _buildDashboardCard('Settings', Icons.settings, Colors.purple, () {
-                    // Navigasi ke ExpenseListScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SettingsScreen()),
-                    );
-                  }),
-                  _buildDashboardCard('Expense Analytics', Icons.analytics, const Color.fromARGB(255, 61, 83, 61), () {
-                    // Navigasi ke AdvancedExpenseListScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const AdvancedExpenseListScreen()),
-                    );
-                  }),
-                  _buildDashboardCard('Category', Icons.category, const Color.fromARGB(255, 97, 64, 178), () {
-                    // Navigasi ke CategoryScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const CategoryScreen()),
-                    );
-                  }),
-                  _buildDashboardCard('Statistic', Icons.bar_chart, const Color.fromARGB(255, 135, 73, 114), () {
-                    // Navigasi ke StatisticScreen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const StatisticsScreen()),
-                    );
-                  }),
-                  _buildDashboardCard('Shared Expenses', Icons.group, Colors.teal, () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const SharedExpensesScreen()),
-                    );
-                  }),
-                ],
-              ),
-            ),
-          ],
+              }),
+            ],
+          ),
         ),
       ),
     );
   }
 
+  Widget _buildDrawerItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.white),
+      title: Text(
+        title,
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
+      onTap: onTap,
+    );
+  }
+
   Widget _buildDashboardCard(String title, IconData icon, Color color, VoidCallback? onTap) {
     return Card(
-      elevation: 4,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Builder(
         builder: (context) => InkWell(
           onTap: onTap ?? () {
@@ -192,19 +266,40 @@ class HomeScreen extends StatelessWidget {
               SnackBar(content: Text('Fitur $title segera hadir!')),
             );
           },
+          borderRadius: BorderRadius.circular(20),
           child: Container(
             padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: color.withOpacity(0.2),
+                  blurRadius: 15,
+                  offset: Offset(0, 5),
+                ),
+              ],
+            ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(icon, size: 48, color: color),
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: color.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Icon(icon, size: 32, color: color),
+                ),
                 SizedBox(height: 12),
                 Text(
                   title,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF5D4E7C),
                   ),
                 ),
               ],

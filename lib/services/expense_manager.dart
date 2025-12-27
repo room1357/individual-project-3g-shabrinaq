@@ -2,6 +2,8 @@ import '../models/expense.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
+enum PeriodType { week, month, year, all }
+
 class ExpenseManager {
   static List<Expense> expenses = [
     Expense(
@@ -174,5 +176,61 @@ class ExpenseManager {
     var sorted = List<Expense>.from(expenses);
     sorted.sort((a, b) => b.date.compareTo(a.date));
     return sorted.take(limit).toList();
+  }
+  
+  // filter berdasarkan period (Week, Month, Year)
+  static Map<String, double> getCategoryTotalsByPeriod({
+    required PeriodType period,
+    int? year,
+    int? month,
+    int? week,
+  }) {
+    Map<String, double> totals = {};
+    
+    for (var expense in expenses) {
+      bool isInPeriod = false;
+      
+      switch (period) {
+        case PeriodType.year:
+          // Filter berdasarkan tahun
+          isInPeriod = expense.date.year == year;
+          break;
+          
+        case PeriodType.month:
+          // Filter berdasarkan bulan dan tahun
+          isInPeriod = expense.date.year == year && 
+                       expense.date.month == month;
+          break;
+          
+        case PeriodType.week:
+          // Filter berdasarkan minggu dalam tahun
+          if (expense.date.year == year) {
+            int expenseWeek = _getWeekOfYear(expense.date);
+            isInPeriod = expenseWeek == week;
+          }
+          break;
+          
+        case PeriodType.all:
+          isInPeriod = true;
+          break;
+      }
+      
+      // totals
+      if (isInPeriod) {
+        String category = expense.category;
+        totals[category] = (totals[category] ?? 0) + expense.amount;
+      }
+    }
+    
+    return totals;
+  }
+  
+  // untuk mendapatkan minggu ke berapa dalam tahun
+  static int _getWeekOfYear(DateTime date) {
+    final startOfYear = DateTime(date.year, 1, 1);
+    final daysSinceStart = date.difference(startOfYear).inDays;
+    
+    // Menghitung week
+    return (daysSinceStart / 7).floor() + 1;
   }
 }

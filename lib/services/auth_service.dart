@@ -3,7 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 
 class AuthService {
-  // Untuk Register user baru
+
+  // Register new user
   static Future<Map<String, dynamic>> registerUser({
     required String username,
     required String email,
@@ -12,17 +13,17 @@ class AuthService {
   }) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      
-      // Cek apakah username sudah ada
+
+      // Check if username already exists
       final existingUser = prefs.getString('user_$username');
       if (existingUser != null) {
         return {
           'success': false,
-          'message': 'Username sudah digunakan'
+          'message': 'Username is already taken',
         };
       }
 
-      // Untuk Buat user baru
+      // Create new user
       final user = User(
         username: username,
         email: email,
@@ -30,23 +31,26 @@ class AuthService {
         fullName: fullName,
       );
 
-      // Untuk Simpan ke SharedPreferences
-      await prefs.setString('user_$username', jsonEncode(user.toMap()));
+      // Save user to SharedPreferences
+      await prefs.setString(
+        'user_$username',
+        jsonEncode(user.toMap()),
+      );
 
       return {
         'success': true,
-        'message': 'Registrasi berhasil!',
+        'message': 'Registration successful',
         'user': user,
       };
     } catch (e) {
       return {
         'success': false,
-        'message': 'Error: ${e.toString()}'
+        'message': 'An error occurred: ${e.toString()}',
       };
     }
   }
 
-  // Untuk Login user
+  // Login user
   static Future<Map<String, dynamic>> loginUser({
     required String username,
     required String password,
@@ -58,7 +62,7 @@ class AuthService {
       if (userJson == null) {
         return {
           'success': false,
-          'message': 'Username tidak ditemukan'
+          'message': 'Username not found',
         };
       }
 
@@ -67,27 +71,26 @@ class AuthService {
       if (user.password != password) {
         return {
           'success': false,
-          'message': 'Password salah'
+          'message': 'Incorrect password',
         };
       }
 
-      // Simpan session (current user)
+      // Save session
       await prefs.setString('current_user', userJson);
 
       return {
         'success': true,
-        'message': 'Login berhasil!',
+        'message': 'Login successful',
         'user': user,
       };
     } catch (e) {
       return {
         'success': false,
-        'message': 'Error: ${e.toString()}'
+        'message': 'An error occurred: ${e.toString()}',
       };
     }
   }
 
-  // Untuk cek session pada User
   static Future<User?> getCurrentUser() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -101,7 +104,7 @@ class AuthService {
     }
   }
 
-  // Logout
+  // Logout user
   static Future<void> logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('current_user');
