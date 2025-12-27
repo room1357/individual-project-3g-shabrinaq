@@ -11,6 +11,20 @@ class User {
     required this.fullName,
   });
 
+   User copyWith({
+    String? username,
+    String? password,
+    String? email,
+    String? fullName,
+  }) {
+    return User(
+      username: username ?? this.username,
+      password: password ?? this.password,
+      email: email ?? this.email,
+      fullName: fullName ?? this.fullName,
+    );
+  }
+  
   Map<String, dynamic> toMap() => {
         'username': username,
         'password': password,
