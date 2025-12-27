@@ -87,18 +87,18 @@ In this profile section, I did not edit my profile photo, but users can edit the
 
 ## 7. SETTINGS (API)
 In the Settings feature, it is used to implement the API in the Dark Mode settings, and in this Settings section there is also an About card for the application. Dark Mode data is stored on the server so that user display preferences can be accessed consistently from various devices. With this approach, Dark Mode settings are not only stored locally, but also integrated with the backend system.
-Without the API
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/b9ed921f-f743-44b3-8f87-cecb9d4e370b" width="25%" />
-  <img src="https://github.com/user-attachments/assets/deca20aa-9384-4210-a0cd-ffdf31568a0c" width="25%" />
-</p>
-Using the API
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/1146f51a-c8f6-466c-910f-70d2cdb49d82" width="22%" />
-  <img src="https://github.com/user-attachments/assets/385f39da-09ec-497c-9d1f-96ae83f8d6ed" width="22%" />
-  <img src="https://github.com/user-attachments/assets/238dc809-4eea-440d-b29f-018323fabf01" width="22%" />
-  <img src="https://github.com/user-attachments/assets/09132444-6edd-4e1a-83b8-1ea6f824ddb0" width="22%" />
-</p>
+- Without the API
+  <p align="center">
+    <img src="https://github.com/user-attachments/assets/b9ed921f-f743-44b3-8f87-cecb9d4e370b" width="25%" />
+    <img src="https://github.com/user-attachments/assets/deca20aa-9384-4210-a0cd-ffdf31568a0c" width="25%" />
+  </p>
+- Using the API
+  <p align="center">
+    <img src="https://github.com/user-attachments/assets/1146f51a-c8f6-466c-910f-70d2cdb49d82" width="22%" />
+    <img src="https://github.com/user-attachments/assets/385f39da-09ec-497c-9d1f-96ae83f8d6ed" width="22%" />
+    <img src="https://github.com/user-attachments/assets/238dc809-4eea-440d-b29f-018323fabf01" width="22%" />
+    <img src="https://github.com/user-attachments/assets/09132444-6edd-4e1a-83b8-1ea6f824ddb0" width="22%" />
+  </p>
 
 ## 8. CATEGORYS
 With this feature, users can create or add category data according to their needs, as well as edit and delete it. The category data that has been created will automatically appear in expense analysis, add and edit expenses.
