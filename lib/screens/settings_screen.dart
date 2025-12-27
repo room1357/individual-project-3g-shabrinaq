@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../models/user.dart';
 import '../services/auth_service.dart';
 import 'about_screen.dart';
+import '../services/settings_service.dart';
+import '../main.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -13,11 +15,13 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   User? currentUser;
   bool isLoading = true;
+  bool darkMode = false;
 
   @override
   void initState() {
     super.initState();
     _loadCurrentUser();
+    _loadSettings();
   }
 
   Future<void> _loadCurrentUser() async {
@@ -25,6 +29,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
     setState(() {
       currentUser = user;
       isLoading = false;
+    });
+  }
+
+  Future<void> _loadSettings() async {
+    final isDarkModeActive = themeNotifier.value == ThemeMode.dark;
+    setState(() {
+      darkMode = isDarkModeActive;
     });
   }
 
@@ -42,6 +53,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -50,10 +63,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF8B7AB8),
-              Color(0xFF6B5B95),
-              Color(0xFF4A4063),
+            colors: isDark 
+            ? [
+                Color(0xFF1a1a2e), // Dark purple
+                Color(0xFF16213e),
+                Color(0xFF0f3460),
+              ]
+            : [
+                Color(0xFF8B7AB8),
+                Color(0xFF6B5B95),
+                Color(0xFF4A4063),
             ],
           ),
         ),
@@ -87,7 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFFF5F3F7),
+                    color: isDark ? Color(0xFF1e1e2e) : Color(0xFFF5F3F7),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
@@ -106,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             // Bagian identitas (dibuat Card tumpul) - DINAMIS
                             Container(
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: isDark ? Color(0xFF2d2d44) : Colors.white,
                                 borderRadius: BorderRadius.circular(20),
                                 boxShadow: [
                                   BoxShadow(
@@ -149,7 +168,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   style: TextStyle(
                                     fontSize: 17,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFF5D4E7C),
+                                    color: isDark ? Colors.white : Color(0xFF5D4E7C),
                                   ),
                                 ),
                                 subtitle: Padding(
@@ -158,7 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     currentUser?.email ?? 'No Email',
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: Color(0xFF9B8BB4),
+                                      color: isDark ? Colors.white70 : Color(0xFF9B8BB4),
                                     ),
                                   ),
                                 ),
@@ -171,7 +190,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: isDark ? Color(0xFF2d2d44) : Colors.white,
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
@@ -197,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF5D4E7C),
+                                    color: isDark ? Colors.white : Color(0xFF5D4E7C),
                                   ),
                                 ),
                                 subtitle: Padding(
@@ -206,14 +225,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                     "Version info and details",
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: Color(0xFF9B8BB4),
+                                      color: isDark ? Colors.white70 : Color(0xFF9B8BB4),
                                     ),
                                   ),
                                 ),
                                 trailing: Icon(
                                   Icons.arrow_forward_ios_rounded,
                                   size: 18,
-                                  color: Color(0xFF9B8BB4),
+                                  color: isDark ? Colors.white70 : Color(0xFF9B8BB4),
                                 ),
                                 onTap: () {
                                   Navigator.push(
@@ -226,11 +245,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
 
-                            // Bahasa
+                            // Dark Mode Toggle
                             Container(
                               margin: EdgeInsets.only(bottom: 12),
                               decoration: BoxDecoration(
-                                color: Colors.white,
+                                color: isDark ? Color(0xFF2d2d44) : Colors.white,
                                 borderRadius: BorderRadius.circular(16),
                                 boxShadow: [
                                   BoxShadow(
@@ -240,107 +259,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                   ),
                                 ],
                               ),
-                              child: ListTile(
+                              child: SwitchListTile(
                                 contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                leading: Container(
-                                  width: 45,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF9B87C6).withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Icon(Icons.language_rounded, color: Color(0xFF9B87C6), size: 24),
-                                ),
                                 title: Text(
-                                  "Language",
+                                  "Dark Mode",
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
-                                    color: Color(0xFF5D4E7C),
+                                    color: isDark ? Colors.white : Color(0xFF5D4E7C),
                                   ),
                                 ),
                                 subtitle: Padding(
                                   padding: const EdgeInsets.only(top: 4),
                                   child: Text(
-                                    "Select App Language",
+                                    "Toggle dark theme",
                                     style: TextStyle(
                                       fontSize: 13,
-                                      color: Color(0xFF9B8BB4),
+                                      color: isDark ? Colors.white70 : Color(0xFF9B8BB4),
                                     ),
                                   ),
                                 ),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  size: 18,
-                                  color: Color(0xFF9B8BB4),
-                                ),
-                                onTap: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text("Language feature coming soon!"),
-                                      backgroundColor: Color(0xFF7B68AA),
-                                      behavior: SnackBarBehavior.floating,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
+                                value: darkMode,
+                                activeColor: Color(0xFF7B68AA),
+                                onChanged: (value) async {
+                                  setState(() {
+                                    darkMode = value;
+                                  });
 
-                            // Keamanan
-                            Container(
-                              margin: EdgeInsets.only(bottom: 12),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0xFF9B87C6).withOpacity(0.1),
-                                    blurRadius: 10,
-                                    offset: Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: ListTile(
-                                contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                leading: Container(
-                                  width: 45,
-                                  height: 45,
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFFB89090).withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Icon(Icons.lock_rounded, color: Color(0xFFB89090), size: 24),
-                                ),
-                                title: Text(
-                                  "Privacy & Security",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF5D4E7C),
-                                  ),
-                                ),
-                                subtitle: Padding(
-                                  padding: const EdgeInsets.only(top: 4),
-                                  child: Text(
-                                    "Account Security Settings",
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: Color(0xFF9B8BB4),
-                                    ),
-                                  ),
-                                ),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                  size: 18,
-                                  color: Color(0xFF9B8BB4),
-                                ),
-                                onTap: () {
+                                  themeNotifier.value =
+                                      value ? ThemeMode.dark : ThemeMode.light;
+
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text("Security features coming soon!"),
+                                      content: Text("Settings saved"),
                                       backgroundColor: Color(0xFF7B68AA),
                                       behavior: SnackBarBehavior.floating,
                                       shape: RoundedRectangleBorder(
@@ -348,6 +299,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                       ),
                                     ),
                                   );
+
+                                  await SettingsService.saveDarkMode(value);
                                 },
                               ),
                             ),
