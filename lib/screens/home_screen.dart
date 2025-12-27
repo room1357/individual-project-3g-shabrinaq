@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -24,10 +25,16 @@ class HomeScreen extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF8B7AB8),
-              Color(0xFF6B5B95),
-              Color(0xFF4A4063),
+            colors: isDark 
+            ? [
+                Color(0xFF1a1a2e), // Dark purple
+                Color(0xFF16213e),
+                Color(0xFF0f3460),
+              ]
+            : [
+                Color(0xFF8B7AB8),
+                Color(0xFF6B5B95),
+                Color(0xFF4A4063),
             ],
           ),
         ),
@@ -78,7 +85,7 @@ class HomeScreen extends StatelessWidget {
               Expanded(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFFF5F3F7),
+                    color: isDark ? Color(0xFF1e1e2e) : Color(0xFFF5F3F7),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),

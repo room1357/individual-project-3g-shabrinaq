@@ -58,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -66,10 +67,16 @@ class _LoginScreenState extends State<LoginScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF8B7AB8),
-              Color(0xFF6B5B95),
-              Color(0xFF4A4063),
+            colors: isDark 
+            ? [
+                Color(0xFF1a1a2e), // Dark purple
+                Color(0xFF16213e),
+                Color(0xFF0f3460),
+              ]
+            : [
+                Color(0xFF8B7AB8),
+                Color(0xFF6B5B95),
+                Color(0xFF4A4063),
             ],
           ),
         ),
