@@ -41,8 +41,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         );
         break;
       case PeriodType.all:
-      default:
-        totals = ExpenseManager.getCategoryTotals();
+      totals = ExpenseManager.getCategoryTotals();
     }
     
     setState(() {
